@@ -5,11 +5,8 @@
 # ========================================================================
 import pika 
 import json
-import threading
-import os, sys
 import time, base64
 from utils.crypto_utils import carregar_chave_publica, verificar_assinatura
-from utils.reserva_utils import carregar_itinerarios, listar_itinerarios, consultar_itinerarios
 
 CHAVE = carregar_chave_publica()
 
@@ -119,51 +116,3 @@ def escutar_fila(routing_key, callback):
                             auto_ack=True)
       
       channel.start_consuming()
-
-
-def main():
-      itinerarios = carregar_itinerarios()
-
-      threading.Thread(target=escutar_fila, args=('pagamento-aprovado', callback_aprovado), daemon=True).start()
-      threading.Thread(target=escutar_fila, args=('pagamento-recusado', callback_recusado), daemon=True).start()
-      threading.Thread(target=escutar_fila, args=('bilhete-gerado', callback_bilhete), daemon=True).start()
-
-      while True:
-            print("\n=== Sistema de Reservas ===")
-            print("1 - Listar todos itinerários")
-            print("2 - Consultar itinerários")
-            print("3 - Reservar cruzeiro")
-            print("4 - Sair")
-            opcao = input("Escolha uma opção: ")
-
-            if opcao == "1":
-                  listar_itinerarios(itinerarios)
-            elif opcao == "2":
-                  consultar_itinerarios(itinerarios)
-            elif opcao == "3":
-                  try:  
-                        id_itinerario = int(input("ID itinerário: "))
-                        data_embarque = input("Data de Embarque: ")
-                        passageiros = int(input("Número de passageiros: "))
-                        cabines = int(input("Número de cabines: "))
-                        publicar_reserva(id_itinerario, data_embarque, passageiros, cabines)
-                        time.sleep(7)
-
-                  except ValueError:
-                        print("Valor inválido.")
-
-            elif opcao == "4":
-                  print("Saindo...")
-                  break
-            else:
-                  print("Opção inválida.")
-
-if __name__ == '__main__':
-      try:
-            main()
-      except KeyboardInterrupt:
-            print("Interrupted")
-            try:
-                  sys.exit(0)
-            except SystemExit:
-                  os._exit(0)

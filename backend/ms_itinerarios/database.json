@@ -1,0 +1,38 @@
+{
+  "1": {
+    "destino": "Ilhas do Caribe",
+    "nome_navio": "Oceano Azul",
+    "portos_embarque": "Rio de Janeiro",
+    "noites": 5,
+    "valor_por_pessoa": 1500,
+    "datas": {
+      "2025-07-10": { "cabines_disponiveis": 20 },
+      "2025-07-20": { "cabines_disponiveis": 15 }
+    },
+    "lugares_visitados": ["Ilhabela", "Santos", "Búzios"]
+  },
+  "2": {
+    "destino": "Nordeste Brasileiro",
+    "nome_navio": "Mar Profundo",
+    "portos_embarque": "Salvador",
+    "noites": 7,
+    "valor_por_pessoa": 2000,
+    "datas": {
+      "2025-07-05": { "cabines_disponiveis": 10 },
+      "2025-07-12": { "cabines_disponiveis": 8 }
+    },
+    "lugares_visitados": ["Recife", "Natal", "João Pessoa"]
+  },
+  "3": {
+    "destino": "Patagônia",
+    "nome_navio": "Expedição Austral",
+    "portos_embarque": "Buenos Aires",
+    "noites": 10,
+    "valor_por_pessoa": 3200,
+    "datas": {
+      "2025-08-01": { "cabines_disponiveis": 12 },
+      "2025-08-15": { "cabines_disponiveis": 6 }
+    },
+    "lugares_visitados": ["Ushuaia", "Punta Arenas", "Ilha Navarino"]
+  }
+}
