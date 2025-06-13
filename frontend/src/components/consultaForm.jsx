@@ -1,94 +1,76 @@
+import React, { useState } from 'react';
+import { buscarItinerarios } from '../api';
 
-import React, { useState } from "react";
+const ConsultaForm = () => {
+  const [filtros, setFiltros] = useState({
+    destino: '',
+    data_embarque: '',
+    porto_embarque: '',
+  });
 
-export default function ConsultaItinerarios() {
-  const [destino, setDestino] = useState("");
-  const [data, setData] = useState("");
-  const [porto, setPorto] = useState("");
   const [resultados, setResultados] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [erro, setErro] = useState(null);
 
-  async function buscarItinerarios(e) {
+  const handleChange = (e) => {
+    setFiltros({ ...filtros, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setErro(null);
-    setResultados([]);
-
     try {
-      const params = new URLSearchParams();
-      if (destino) params.append("destino", destino);
-      if (data) params.append("data", data);
-      if (porto) params.append("porto_embarque", porto);
-
-      const res = await fetch(`http://localhost:8000/consulta-itinerarios?${params.toString()}`);
-      if (!res.ok) {
-        throw new Error(`Erro na consulta: ${res.statusText}`);
-      }
-
-      const dados = await res.json();
-      setResultados(dados);
-    } catch (err) {
-      setErro(err.message);
-    } finally {
-      setLoading(false);
+      const response = await buscarItinerarios(filtros);
+      console.log('Resultado da consulta:', response.data);
+      setResultados(response.data);
+    } catch (error) {
+      console.error('Erro ao buscar itinerários:', error);
     }
-  }
+  };
 
   return (
-    <div style={{ padding: 20 }}>
+    <div style={{ padding: '20px' }}>
       <h2>Consulta de Itinerários</h2>
-      <form onSubmit={buscarItinerarios} style={{ marginBottom: 20 }}>
-        <div>
-          <label>Destino: </label>
-          <input
-            type="text"
-            value={destino}
-            onChange={(e) => setDestino(e.target.value)}
-            placeholder="Ex: Ilhas do Caribe"
-          />
-        </div>
-        <div>
-          <label>Data (AAAA-MM-DD): </label>
-          <input
-            type="date"
-            value={data}
-            onChange={(e) => setData(e.target.value)}
-          />
-        </div>
-        <div>
-          <label>Porto de Embarque: </label>
-          <input
-            type="text"
-            value={porto}
-            onChange={(e) => setPorto(e.target.value)}
-            placeholder="Ex: Rio de Janeiro"
-          />
-        </div>
-        <button type="submit" disabled={loading} style={{ marginTop: 10 }}>
-          {loading ? "Buscando..." : "Buscar"}
-        </button>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          name="destino"
+          placeholder="Destino"
+          value={filtros.destino}
+          onChange={handleChange}
+        />
+        <input
+          type="date"
+          name="data_embarque"
+          value={filtros.data_embarque}
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          name="porto_embarque"
+          placeholder="Porto de Embarque"
+          value={filtros.porto_embarque}
+          onChange={handleChange}
+        />
+        <button type="submit">Buscar</button>
       </form>
 
-      {erro && <p style={{ color: "red" }}>{erro}</p>}
-
-      {resultados.length > 0 && (
-        <div>
-          <h3>Resultados:</h3>
-          <ul>
-            {resultados.map((item) => (
-              <li key={item.id}>
-                <strong>{item.destino}</strong> - Navio: {item.nome_navio} - Noites: {item.noites} - Valor: R$ {item.valor_por_pessoa}<br />
-                Portos: {item.portos_embarque}<br />
-                Datas disponíveis: {Object.keys(item.datas).join(", ")}<br />
-                Lugares visitados: {item.lugares_visitados.join(", ")}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {!loading && resultados.length === 0 && <p>Nenhum itinerário encontrado.</p>}
+      <div style={{ marginTop: '20px' }}>
+        {resultados.length === 0 ? (
+          <p>Nenhum itinerário encontrado.</p>
+        ) : (
+          resultados.map((itinerario, index) => (
+            <div key={index} style={{ border: '1px solid #ccc', margin: '10px 0', padding: '10px' }}>
+              <h3>{itinerario.nome_navio}</h3>
+              <p><strong>Destino:</strong> {itinerario.destino}</p>
+              <p><strong>Porto de Embarque:</strong> {itinerario.portos_embarque}</p>
+              <p><strong>Data:</strong> {filtros.data_embarque}</p>
+              <p><strong>Noites:</strong> {itinerario.noites}</p>
+              <p><strong>Valor por Pessoa:</strong> R$ {itinerario.valor_por_pessoa}</p>
+              <p><strong>Cabines Disponíveis:</strong> {itinerario.cabines_disponiveis}</p>
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
-}
+};
+
+export default ConsultaForm;

@@ -20,11 +20,11 @@ app.add_middleware(
 )
 
 @app.get("/consulta-itinerarios")
-def consulta_itinerarios(destino: str = Query(...), data: str = Query(...), porto_embarque: str = Query(...)):
+def consulta_itinerarios(destino: str = Query(...), data_embarque: str = Query(...), porto_embarque: str = Query(...)):
     try:
         response = requests.get(ITINERARIOS_URL, params={
             "destino": destino,
-            "data_embarque": data,
+            "data_embarque": data_embarque,
             "porto_embarque": porto_embarque
         })
         response.raise_for_status()
