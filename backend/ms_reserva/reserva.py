@@ -10,6 +10,7 @@ from utils.crypto_utils import carregar_chave_publica, verificar_assinatura
 
 CHAVE = carregar_chave_publica()
 
+
 def publicar_reserva(itinerario, data_embarque, passageiros, cabines):
       id_reserva = f"reserva{itinerario}_{int(time.time())}"
       nova_reserva = {

@@ -1,7 +1,8 @@
 import axios from 'axios';
 
-const api = axios.create({
-    baseURL: "http://localhost:8000"
-});
+const API = "http://localhost:8000";
 
-export default api;
+export const buscarItinerarios = (filtros) => 
+    axios.get(`${API}/itinerarios`, { params: filtros});
+
+export const reservar = () => axios.get(`${API}/reservas`, data);

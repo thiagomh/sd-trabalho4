@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from itinerarios import escutar_fila
+from itinerarios import escutar_fila, callback_cancelada, callback_criada
 from threading import Thread
 from routes import router
 
@@ -22,6 +22,6 @@ app.add_middleware(
 app.include_router(router, prefix="/itinerarios", tags=["Itinerários"])
 
 if __name__ == "__main__":
-    Thread(target=escutar_fila, args=("reserva-criada", )).start()
-    Thread(target=escutar_fila, args=("reserva-cancelada", )).start()
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    Thread(target=escutar_fila, args=("reserva-criada", callback_criada)).start()
+    Thread(target=escutar_fila, args=("reserva-cancelada", callback_cancelada)).start()
+    uvicorn.run(app, host="0.0.0.0", port=8001)

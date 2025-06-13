@@ -1,5 +1,6 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 from pydantic import BaseModel
+from utils.reserva_utils import consultar_itinerarios
 
 
 router = APIRouter()
@@ -10,7 +11,6 @@ class ReservaRequest(BaseModel):
     passageiros: int
     cabines: int
 
-
-# @router.post("/")
-# def reservar_cruzeiro(reserva: ReservaRequest):
-#     return criar_reserva(reserva)
+@router.get("/")
+def buscar_itinerarios(destino: str = Query(...), data_embarque: str = Query(...), porto_embarque: str = Query(...)):
+    return consultar_itinerarios(destino, data_embarque, porto_embarque)

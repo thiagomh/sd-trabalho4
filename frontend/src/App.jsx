@@ -1,20 +1,12 @@
-import { useState } from 'react'
-import './App.css'
-import FruitList from './components/Fruits';
+import ItinerariosList from "./components/itinerariosList";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Fruit Management App</h1>
-      </header>
-      <main>
-        <FruitList />
-      </main>
+    <div>
+      <h1>Sistema de Reservas</h1>
+      <ItinerariosList />
     </div>
-  );
+  )
 }
 
-export default App
+export default App;
