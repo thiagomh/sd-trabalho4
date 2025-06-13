@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Query
 from pydantic import BaseModel
-from utils.reserva_utils import consultar_itinerarios
+from backend.ms_reserva.services import consultar_itinerarios
 
 
 router = APIRouter()
