@@ -48,6 +48,21 @@ def consultar_itinerarios(destino, data_embarque, porto_embarque):
 
     return resultados
 
+def consultar_detalhes(destino: str, nome_navio: str, data: str):
+    itinerarios = carregar_itinerarios()
+    for item in itinerarios.values():
+            if (
+                item["destino"] == destino
+                and item["nome_navio"] == nome_navio
+                and data in item["datas"]
+            ):
+                return {
+                    "valor_por_pessoa": item["valor_por_pessoa"],
+                    "cabines_disponiveis": item["datas"][data]["cabines_disponiveis"]
+                }
+    return {"erro": "Itinerário não encontrado"}
+
+
 def atualizar_cabines_disponiveis(id_itinerario, data_embarque, quantidade, operacao):
     itinerarios = carregar_itinerarios()
     id_itinerario = str(id_itinerario)  

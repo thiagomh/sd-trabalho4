@@ -2,7 +2,7 @@ import uvicorn
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 from itinerarios import escutar_fila, callback_cancelada, callback_criada
-from services import consultar_itinerarios
+from services import consultar_itinerarios, consultar_detalhes
 from threading import Thread
 from typing import Optional
 
@@ -27,6 +27,10 @@ def consultar(
     porto_embarque: Optional[str] = Query(None)
 ):
     return consultar_itinerarios(destino, data_embarque, porto_embarque)
+
+@app.get("/detalhes-itinerario")
+def detalhes_itinerario(destino: str, nome_navio: str, data: str):
+    return consultar_detalhes(destino, nome_navio, data)
 
 if __name__ == "__main__":
     Thread(target=escutar_fila, args=("reserva-criada", callback_criada)).start()

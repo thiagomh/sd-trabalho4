@@ -6,7 +6,7 @@
 import pika 
 import json
 import time, base64
-from utils.crypto_utils import carregar_chave_publica, verificar_assinatura
+from crypto_utils import carregar_chave_publica, verificar_assinatura
 
 CHAVE = carregar_chave_publica()
 
