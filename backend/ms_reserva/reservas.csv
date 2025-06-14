@@ -1,1 +1,3 @@
-id,data_reserva,nome_navio,destino,data_embarque,qtd_passageiros,qtd_cabines,link_pagamento
+id,data_reserva,nome_navio,destino,data_embarque,qtd_passageiros,qtd_cabines,link_pagamentoreserva_id,destino,navio,data,passageiros,cabines,valor_total,link_pagamento
+61fd6945-1f42-4dd4-8122-bd8f93f91a91,Ilhas do Caribe,Oceano Azul,2025-07-10,2,1,3000,https://pagamento.com/pagar/94cf7975-69b8-4f0c-9d65-7562fef73abf
+19c39588-ca38-4b1d-80fa-1752d4516d82,Ilhas do Caribe,Oceano Azul,2025-07-10,2,1,3000,https://pagamento.com/pagar/880c25c4-04f2-4a91-abdf-0dca0ff777b9

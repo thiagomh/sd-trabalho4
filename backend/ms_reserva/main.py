@@ -3,12 +3,13 @@ from fastapi import FastAPI, Query, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import requests, os, uuid, csv
 from pydantic import BaseModel
+from reserva import publicar_reserva
 
 app = FastAPI()
 
 ITINERARIOS_URL = "http://localhost:8001/itinerarios"
-RESERVAS_CSV = "reservas.csv"
 PAGAMENTO_URL = "http://localhost:8002/gerar-link"
+RESERVAS_CSV = "reservas.csv"
 
 origins = [
     "http://localhost:5173"
@@ -83,12 +84,23 @@ def criar_reserva(req: ReservaRequest):
         link_pagamento
     ]
 
-    file_exists = os.path.isfile(RESERVAS_CSV)
-    with open(RESERVAS_CSV, "a", newline="", encoding="utf-8") as f:
+    base_path = os.path.dirname(__file__)
+    path = os.path.join(base_path, "reservas.csv")
+    with open(path, "a", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
-        if not file_exists:
-            writer.writerow(["reserva_id", "destino", "navio", "data", "passageiros", "cabines", "valor_total", "link_pagamento"])
         writer.writerow(nova_linha)
+
+    try:
+        publicar_reserva(
+            id_reserva=reserva_id,
+            nome_navio=req.nome_navio,           
+            data_embarque=req.data_embarque,
+            passageiros=req.qtd_passageiros,
+            cabines=req.qtd_cabines
+        )
+    except Exception as e:
+        print(f"Erro ao publicar mensagem na fila: {e}")
+        raise HTTPException(status_code=500, detail="Erro ao publicar mensagem de reserva")
 
     return {
         "reserva_id": reserva_id,

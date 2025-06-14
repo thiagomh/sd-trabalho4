@@ -11,11 +11,10 @@ from crypto_utils import carregar_chave_publica, verificar_assinatura
 CHAVE = carregar_chave_publica()
 
 
-def publicar_reserva(itinerario, data_embarque, passageiros, cabines):
-      id_reserva = f"reserva{itinerario}_{int(time.time())}"
+def publicar_reserva(id_reserva, nome_navio, data_embarque, passageiros, cabines):
       nova_reserva = {
             "id_reserva": id_reserva,
-            "id_itinerario": itinerario,
+            "nome_navio": nome_navio,
             "data_embarque": data_embarque,
             "passageiros": passageiros,
             "cabines": cabines
@@ -48,7 +47,6 @@ def publicar_reserva(itinerario, data_embarque, passageiros, cabines):
       connection.close()
 
       print("\n Reserva criada com sucesso. Aguarde atualizações.")
-      return id_reserva
 
 
 def callback_aprovado(ch, method, properties, body):
