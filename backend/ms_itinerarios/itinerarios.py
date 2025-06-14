@@ -3,26 +3,24 @@ from services import atualizar_cabines_disponiveis
 
 def callback_criada(ch, method, properties, body):
     try:
-        mensagem = json.loads(body)
-        dados = mensagem["mensagem"]
+        dados = json.loads(body)
         print("Reserva criada recebida.", dados)
         atualizar_cabines_disponiveis(
-            dados["id"],
+            dados["nome_navio"],
             dados["data_embarque"],
             dados["cabines"],
             "criar"
         )
 
     except Exception as e:
-        print(f"Erro no callback-reserva-cancelada. {e}")
+        print(f"Erro no callback-reserva-criada. {e}")
 
 def callback_cancelada(ch, method, properties, body):
     try:
-        mensagem = json.loads(body)
-        dados = mensagem["mensagem"]
+        dados = json.loads(body)
         print("Reserva cancelada recebida.", dados)
         atualizar_cabines_disponiveis(
-            dados["id"],
+            dados["nome_navio"],
             dados["data_embarque"],
             dados["cabines"],
             "cancelar"
