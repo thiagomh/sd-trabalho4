@@ -45,6 +45,7 @@ def consulta_itinerarios(destino: str = Query(...), data_embarque: str = Query(.
     
 @app.post("/reservar")
 def criar_reserva(req: ReservaRequest):
+    print("Recebido:", req.dict())
     resp = requests.get("http://localhost:8001/detalhes-itinerario", params={
         "destino": req.destino,
         "nome_navio": req.nome_navio,
@@ -55,8 +56,8 @@ def criar_reserva(req: ReservaRequest):
         raise HTTPException(status_code=404, detail="Itinerário não encontrado")
 
     dados = resp.json()
-    cabines_disponiveis = dados.get("cabines_disponiveis")
-    valor_por_pessoa = dados.get("valor_por_pessoa")
+    cabines_disponiveis = int(dados.get("cabines_disponiveis"))
+    valor_por_pessoa = int(dados.get("valor_por_pessoa"))
 
     if cabines_disponiveis < req.qtd_cabines:
         raise HTTPException(status_code=400, detail="Cabines insuficientes")
@@ -100,7 +101,6 @@ def criar_reserva(req: ReservaRequest):
         )
     except Exception as e:
         print(f"Erro ao publicar mensagem na fila: {e}")
-        raise HTTPException(status_code=500, detail="Erro ao publicar mensagem de reserva")
 
     return {
         "reserva_id": reserva_id,

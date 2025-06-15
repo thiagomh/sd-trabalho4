@@ -1,18 +1,21 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom"
 import Home from './home'
-import ConsultaItinerarios from "./components/ConsultaForm"
+import ConsultaForm from "./components/ConsultaForm";
+import ReservaForm from "./components/ReservaForm";
 
 function App() {
   return (
     <BrowserRouter>
       <nav style={{ padding: 10, borderBottom: "1px solid #ccc" }}>
         <Link to="/" style={{ marginRight: 10 }}>Home</Link>
-        <Link to="/consulta-itinerarios">Consulta de Itinerários</Link>
+        <Link to="/consulta-itinerarios">Consulta de Itinerários </Link>
+        <Link to="/reservar">Reservar Cruzeiro</Link>
       </nav>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/consulta-itinerarios" element={<ConsultaItinerarios />} />
+        <Route path="/consulta-itinerarios" element={<ConsultaForm />} />
+        <Route path="/reservar" element={<ReservaForm /> } />
       </Routes>
     </BrowserRouter>
   );
