@@ -3,8 +3,9 @@ from fastapi import FastAPI, Query, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import requests, os, uuid, csv
 from pydantic import BaseModel
-from reserva import publicar_reserva
+from reserva import publicar_reserva, escutar_fila, callback_aprovado, callback_recusado, callback_bilhete
 import time
+from threading import Thread
 
 app = FastAPI()
 
@@ -163,4 +164,7 @@ def cancelar_reserva(codigo: str):
         raise HTTPException(status_code=500, detail="Erro interno no servidor")
 
 if __name__ == "__main__":
+    Thread(target=escutar_fila, args=('pagamento-aprovado', callback_aprovado)).start()
+    Thread(target=escutar_fila, args=('pagamento-recusado', callback_recusado)).start()
+    Thread(target=escutar_fila, args=('bilhete-gerado', callback_bilhete)).start()
     uvicorn.run(app, host="0.0.0.0", port=8000)

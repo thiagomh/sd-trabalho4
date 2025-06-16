@@ -8,7 +8,7 @@ def callback_criada(ch, method, properties, body):
         atualizar_cabines_disponiveis(
             dados["nome_navio"],
             dados["data_embarque"],
-            dados["cabines"],
+            int(dados["cabines"]),
             "criar"
         )
 
@@ -22,7 +22,7 @@ def callback_cancelada(ch, method, properties, body):
         atualizar_cabines_disponiveis(
             dados["nome_navio"],
             dados["data_embarque"],
-            dados["cabines"],
+            int(dados["cabines"]),
             "cancelar"
         )
 

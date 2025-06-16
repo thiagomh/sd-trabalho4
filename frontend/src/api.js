@@ -7,3 +7,6 @@ export const buscarItinerarios = (filtros) =>
 
 export const reservar = (dados) =>
     axios.post(`${API}/reservar`, dados);
+
+export const cancelar = ({ codigo }) =>
+    axios.delete(`${API}/reservar/${codigo}`);
