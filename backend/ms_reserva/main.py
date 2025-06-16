@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import requests, os, uuid, csv
 from pydantic import BaseModel
 from reserva import publicar_reserva
+import time
 
 app = FastAPI()
 
@@ -73,7 +74,8 @@ def criar_reserva(req: ReservaRequest):
 
     link_pagamento = pagamento_resp.json().get("link_pagamento")
 
-    reserva_id = str(uuid.uuid4())
+    reserva_id = str(time.time())
+    status = "ativa"
     nova_linha = [
         reserva_id,
         req.destino,
@@ -82,7 +84,8 @@ def criar_reserva(req: ReservaRequest):
         req.qtd_passageiros,
         req.qtd_cabines,
         valor_total,
-        link_pagamento
+        link_pagamento,
+        status
     ]
 
     base_path = os.path.dirname(__file__)
@@ -97,7 +100,8 @@ def criar_reserva(req: ReservaRequest):
             nome_navio=req.nome_navio,           
             data_embarque=req.data_embarque,
             passageiros=req.qtd_passageiros,
-            cabines=req.qtd_cabines
+            cabines=req.qtd_cabines,
+            routing_key='reserva-criada',
         )
     except Exception as e:
         print(f"Erro ao publicar mensagem na fila: {e}")
@@ -107,6 +111,56 @@ def criar_reserva(req: ReservaRequest):
         "valor_total": valor_total,
         "link_pagamento": link_pagamento
     }
+
+@app.delete("/reservar/{codigo}")
+def cancelar_reserva(codigo: str):
+    print(f"Cancelando reserva com código: {codigo}")
+    reserva_encontrada = False
+    reservas_atualizadas = []
+    base_path = os.path.dirname(__file__)
+    path = os.path.join(base_path, "reservas.csv")
+
+    try:
+        with open(path, "r", newline="", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            if not reader.fieldnames:
+                raise ValueError("Cabeçalhos do CSV não encontrados.")
+            fieldnames = reader.fieldnames
+
+            for row in reader:
+                if row["id"] == codigo:
+                    print(f"Reserva encontrada: {row}")
+                    row["status"] = "cancelada"
+                    reserva_encontrada = True
+
+                    try:
+                        publicar_reserva(
+                            id_reserva=row["id"],
+                            nome_navio=row["nome_navio"],
+                            data_embarque=row["data_embarque"],
+                            passageiros=row["qtd_passageiros"],
+                            cabines=row["qtd_cabines"],
+                            routing_key='reserva-cancelada'
+                        )
+                    except Exception as e:
+                        print(f"Erro ao publicar mensagem: {e}")
+
+                reservas_atualizadas.append(row)
+
+        if not reserva_encontrada:
+            return {"erro": f"Reserva com código {codigo} não encontrada"}
+
+        with open(path, "w", newline='', encoding='utf-8') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(reservas_atualizadas)
+
+        print(f"Reserva {codigo} cancelada com sucesso.")
+        return {"mensagem": f"Reserva {codigo} cancelada com sucesso"}
+    
+    except Exception as e:
+        print(f"Erro ao processar cancelamento: {e}")
+        raise HTTPException(status_code=500, detail="Erro interno no servidor")
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

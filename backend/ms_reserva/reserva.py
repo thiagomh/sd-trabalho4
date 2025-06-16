@@ -11,7 +11,7 @@ from crypto_utils import carregar_chave_publica, verificar_assinatura
 CHAVE = carregar_chave_publica()
 
 
-def publicar_reserva(id_reserva, nome_navio, data_embarque, passageiros, cabines):
+def publicar_reserva(id_reserva, nome_navio, data_embarque, passageiros, cabines, routing_key):
       nova_reserva = {
             "id_reserva": id_reserva,
             "nome_navio": nome_navio,
@@ -26,13 +26,12 @@ def publicar_reserva(id_reserva, nome_navio, data_embarque, passageiros, cabines
       channel = connection.channel()
 
       exchange_name = "sistema_exchange"
-      routing_key = "reserva-criada"
 
       channel.exchange_declare(exchange=exchange_name,
                                exchange_type='direct',
                                durable=True)
       
-      channel.queue_declare(queue='reserva-criada', durable=True)
+      channel.queue_declare(queue=routing_key, durable=True)
       channel.queue_bind(exchange=exchange_name,
                          queue=routing_key,
                          routing_key=routing_key)
@@ -45,8 +44,6 @@ def publicar_reserva(id_reserva, nome_navio, data_embarque, passageiros, cabines
       )
 
       connection.close()
-
-      print("\n Reserva criada com sucesso. Aguarde atualizações.")
 
 
 def callback_aprovado(ch, method, properties, body):
