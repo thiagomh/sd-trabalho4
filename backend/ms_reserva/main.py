@@ -58,6 +58,7 @@ def criar_reserva(req: ReservaRequest):
         raise HTTPException(status_code=404, detail="Itinerário não encontrado")
 
     dados = resp.json()
+    print("DEBUG dados recebidos do MS Navio:", dados)
     cabines_disponiveis = int(dados.get("cabines_disponiveis"))
     valor_por_pessoa = int(dados.get("valor_por_pessoa"))
 
@@ -66,8 +67,10 @@ def criar_reserva(req: ReservaRequest):
 
     valor_total = valor_por_pessoa * req.qtd_passageiros
 
+    reserva_id = str(time.time())
     pagamento_resp = requests.post(PAGAMENTO_URL, json={
-        "valor": valor_total
+        "valor": valor_total,
+        "reserva_id": reserva_id,
     })
 
     if pagamento_resp.status_code != 200:
@@ -75,7 +78,6 @@ def criar_reserva(req: ReservaRequest):
 
     link_pagamento = pagamento_resp.json().get("link_pagamento")
 
-    reserva_id = str(time.time())
     status = "ativa"
     nova_linha = [
         reserva_id,

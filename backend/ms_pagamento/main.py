@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-import uuid
+from random import choice
 from pydantic import BaseModel
 from pagamento import escutar_fila
 from threading import Thread
@@ -22,13 +22,14 @@ app.add_middleware(
 
 class PagamentoRequest(BaseModel):
     valor: float
+    reserva_id: str
 
 @app.post("/gerar-link")
 def gerar_link_pagamento(req: PagamentoRequest):
     if req.valor <= 0:
         raise HTTPException(status_code=400, detail="Valor inválido")
 
-    link = f"https://pagamento.com/pagar/{uuid.uuid4()}"
+    link = f"https://pagamento.com/pagar/{req.reserva_id}"
     
     return {"link_pagamento": link}
 
