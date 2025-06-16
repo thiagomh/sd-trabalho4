@@ -11,7 +11,6 @@ from random import choice
 from crypto_utils import assinar_mensagem
 
 def callback(ch, method, properties, body):
-      # fazer assinatura
       mensagem = json.loads(body)
 
       assinatura = assinar_mensagem(json.dumps(mensagem).encode())
@@ -50,7 +49,7 @@ def callback(ch, method, properties, body):
 
       print(f"Mensagem '{routing_key}' publicada com assinatura")
 
-def main():
+def escutar_fila():
       print("MS Pagamento aguardando reservas...")
 
       connection = pika.BlockingConnection(pika.ConnectionParameters("localhost"))
@@ -70,13 +69,3 @@ def main():
                             auto_ack=True)
 
       channel.start_consuming()
-
-if __name__ == '__main__':
-      try:
-            main()
-      except KeyboardInterrupt:
-            print("Interrupted")
-            try:
-                  sys.exit(0)
-            except SystemExit:
-                  os._exit(0)

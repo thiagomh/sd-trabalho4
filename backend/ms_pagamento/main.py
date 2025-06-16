@@ -3,6 +3,8 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import uuid
 from pydantic import BaseModel
+from pagamento import escutar_fila
+from threading import Thread
 
 app = FastAPI()
 
@@ -31,4 +33,5 @@ def gerar_link_pagamento(req: PagamentoRequest):
     return {"link_pagamento": link}
 
 if __name__ == "__main__":
+    Thread(target=escutar_fila, args=()).start()
     uvicorn.run(app, host="0.0.0.0", port=8002)
