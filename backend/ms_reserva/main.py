@@ -58,7 +58,6 @@ def criar_reserva(req: ReservaRequest):
         raise HTTPException(status_code=404, detail="Itinerário não encontrado")
 
     dados = resp.json()
-    print("DEBUG dados recebidos do MS Navio:", dados)
     cabines_disponiveis = int(dados.get("cabines_disponiveis"))
     valor_por_pessoa = int(dados.get("valor_por_pessoa"))
 
@@ -71,6 +70,11 @@ def criar_reserva(req: ReservaRequest):
     pagamento_resp = requests.post(PAGAMENTO_URL, json={
         "valor": valor_total,
         "reserva_id": reserva_id,
+        "moeda": "BRL",
+        "cliente": {
+            "nome": "",
+            "email": ""
+        }
     })
 
     if pagamento_resp.status_code != 200:
@@ -166,6 +170,7 @@ def cancelar_reserva(codigo: str):
         raise HTTPException(status_code=500, detail="Erro interno no servidor")
 
 if __name__ == "__main__":
+    print("=== MS RESERVA ===")
     Thread(target=escutar_fila, args=('pagamento-aprovado', callback_aprovado)).start()
     Thread(target=escutar_fila, args=('pagamento-recusado', callback_recusado)).start()
     Thread(target=escutar_fila, args=('bilhete-gerado', callback_bilhete)).start()

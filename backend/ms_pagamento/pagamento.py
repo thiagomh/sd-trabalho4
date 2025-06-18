@@ -6,30 +6,19 @@
 import pika 
 import json
 import base64
-import sys, os
 from random import choice
-from crypto_utils import assinar_mensagem
 
 def callback(ch, method, properties, body):
       mensagem = json.loads(body)
+      print(mensagem)
 
-      assinatura = assinar_mensagem(json.dumps(mensagem).encode())
-      assinatura_b64 = base64.b64encode(assinatura).decode('utf-8')
-
-      aprovado = choice([True, False])
-
-      nova_mensagem = {
-            "mensagem": mensagem,
-            "assinatura": assinatura_b64,
-            "status": aprovado
-      }
-
+def publica_na_fila(routing_key, mensagem):
+      nova_mensagem = mensagem
       connection = pika.BlockingConnection(pika.ConnectionParameters("localhost")) 
       channel = connection.channel()
 
       exchange = "sistema_exchange"
-      routing_key = "pagamento-aprovado" if aprovado else "pagamento-recusado"
-
+      
       channel.exchange_declare(exchange=exchange,
                                exchange_type="direct",
                                durable=True) 
@@ -47,7 +36,7 @@ def callback(ch, method, properties, body):
 
       connection.close()
 
-      print(f"Mensagem '{routing_key}' publicada com assinatura")
+      print(f"Mensagem '{routing_key}' publicada")
 
 def escutar_fila():
       print("MS Pagamento aguardando reservas...")

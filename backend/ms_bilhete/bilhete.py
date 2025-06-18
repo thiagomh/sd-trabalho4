@@ -7,10 +7,6 @@ import pika
 import os, sys
 import json
 import uuid
-import base64
-from crypto_utils import carregar_chave_publica, verificar_assinatura
-
-CHAVE = carregar_chave_publica()
 
 def gerar_bilhete(mensagem):
       return {
@@ -51,14 +47,6 @@ def callback(ch, method, properties, body):
       try:
             mensagem = json.loads(body)
             dados_reserva = mensagem["mensagem"]
-            assinatura = mensagem["assinatura"]
-
-            assinatura = base64.b64decode(assinatura)
-            mensagem_serializada = json.dumps(dados_reserva).encode()
-
-            if not verificar_assinatura(CHAVE, mensagem_serializada, assinatura):
-                  print("Assinatura inálida.")
-                  return
             
             print("Assinatura validada. Gerando bilhete...")
             bilhete = gerar_bilhete(dados_reserva)

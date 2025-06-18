@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { cancelar } from "../api"; // você já tem essa função na sua API
+import { cancelar } from "../api"; 
 
 const CancelarReservaForm = () => {
     const [codigo, setCodigo] = useState("");
@@ -15,7 +15,7 @@ const CancelarReservaForm = () => {
         }
 
         try {
-            const response = await cancelar({ codigo }); // Usando como { params: { codigo } }
+            const response = await cancelar({ codigo }); 
             setMensagem(response.data.mensagem || "Reserva cancelada com sucesso.");
             setErro(null);
         } catch (err) {
