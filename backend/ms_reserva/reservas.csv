@@ -1,1 +1,2 @@
 id,destino,nome_navio,data_embarque,qtd_passageiros,qtd_cabines,valor_total,link_pagamento,status
+1750261168.024743,Ilhas do Caribe,Oceano Azul,2025-07-10,4,1,6000,http://localhost:8005/pagar/1750261168.024743,cancelada
