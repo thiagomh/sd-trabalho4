@@ -26,13 +26,7 @@ def criar_link(req: CriarLinkRequest):
     cliente_nome = req.cliente_nome if req.cliente_nome else "Não identificado"
     cliente_email = req.cliente_email if req.cliente_email else "naoinformado@email.com"
 
-    pagamentos[reserva_id] = {
-        "valor": valor,
-        "cliente_nome": cliente_nome,
-        "cliente_email": cliente_email,
-    }
-
-    link = f"https://localhost:8005/pagar/{reserva_id}"
+    link = f"http://localhost:8005/pagar/{reserva_id}"
 
     def enviar_webhook():
         status = random.choice([True, False])
@@ -47,6 +41,8 @@ def criar_link(req: CriarLinkRequest):
                 "email": cliente_email
             }
         }
+
+        pagamentos[reserva_id] = payload
 
         try:
             print(f"[Sistema Externo] Enviando webhook: {payload}")
@@ -63,6 +59,9 @@ async def visualizar_pagamento(reserva_id: str):
     dados = pagamentos.get(reserva_id)
     if not dados:
         return HTMLResponse("<h2>Reserva não encontrada.</h2>", status_code=404)
+
+    status = "✅ Pagamento Aprovado" if dados["status"] else "❌ Pagamento Recusado"
+    cor_status = "green" if dados["status"] else "red"
 
     html = f"""
     <html>
@@ -87,16 +86,24 @@ async def visualizar_pagamento(reserva_id: str):
             }}
             p {{
                 font-size: 18px;
+                margin: 10px 0;
+            }}
+            .status {{
+                font-weight: bold;
+                color: {cor_status};
+                font-size: 20px;
             }}
         </style>
     </head>
     <body>
         <div class="card">
             <h2>Detalhes do Pagamento</h2>
+            <p><strong>ID da Transação:</strong> {dados["id_transacao"]}</p>
             <p><strong>Reserva ID:</strong> {reserva_id}</p>
-            <p><strong>Cliente:</strong> {dados['cliente_nome']}</p>
-            <p><strong>Email:</strong> {dados['cliente_email']}</p>
-            <p><strong>Valor:</strong> R$ {dados['valor']:.2f}</p>
+            <p><strong>Cliente:</strong> {dados["cliente"]["nome"]}</p>
+            <p><strong>Email:</strong> {dados["cliente"]["email"]}</p>
+            <p><strong>Valor:</strong> R$ {dados["valor"]:.2f}</p>
+            <p class="status">{status}</p>
         </div>
     </body>
     </html>
