@@ -54,8 +54,8 @@ def callback_aprovado(ch, method, properties, body):
 
 def callback_recusado(ch, method, properties, body):
       try:
-            mensagem = json.loads(body)
-            print(mensagem)
+            dados = json.loads(body)
+            mensagem = dados["mensagem"]
             reserva_id = mensagem.get("reserva_id")
             try:
                   resp = requests.delete(f"http://localhost:8000/reservar/{reserva_id}")

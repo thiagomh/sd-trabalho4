@@ -1,7 +1,1 @@
 id,destino,nome_navio,data_embarque,qtd_passageiros,qtd_cabines,valor_total,link_pagamento,status
-1750261168.024743,Ilhas do Caribe,Oceano Azul,2025-07-10,4,1,6000,http://localhost:8005/pagar/1750261168.024743,cancelada
-1750261557.7022462,Ilhas do Caribe,Oceano Azul,2025-07-10,4,1,6000,http://localhost:8005/pagar/1750261557.7022462,ativa
-1750261719.4901416,Ilhas do Caribe,Oceano Azul,2025-07-10,4,1,6000,http://localhost:8005/pagar/1750261719.4901416,ativa
-1750261746.6413212,Ilhas do Caribe,Oceano Azul,2025-07-10,4,1,6000,http://localhost:8005/pagar/1750261746.6413212,ativa
-1750261759.4569798,Ilhas do Caribe,Oceano Azul,2025-07-10,4,1,6000,http://localhost:8005/pagar/1750261759.4569798,ativa
-1750261773.034293,Ilhas do Caribe,Oceano Azul,2025-07-10,4,1,6000,http://localhost:8005/pagar/1750261773.034293,ativa

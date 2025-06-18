@@ -22,12 +22,16 @@ const ReservaForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setResposta(null)
+        setErro(null)
         try {
             console.log("Enviando dados:", dados);
             const response = await reservar(dados);
             setResposta(response.data)
         } catch (error) {
             console.error('Erro ao criar reserva: ', error)
+            const msgErro = error.response?.data?.detail || error.message || "Erro desconhecido";
+            setErro(msgErro);
         }
     };
 
@@ -43,6 +47,8 @@ const ReservaForm = () => {
                 <button type="submit" className="bg-blue-500 text-white py-2 rounded">Reservar</button>
             </form>
 
+            {erro && <p className="mt-4 text-red-500">{erro}</p>}
+
             {resposta && (
                 <div className="mt-4 p-3 bg-green-100 rounded">
                 <p><strong>ID da Reserva:</strong> {resposta.reserva_id}</p>
@@ -51,7 +57,6 @@ const ReservaForm = () => {
                 </div>
             )}
 
-            {erro && <p className="mt-4 text-red-500">{erro}</p>}
         </div>
     );
 };
