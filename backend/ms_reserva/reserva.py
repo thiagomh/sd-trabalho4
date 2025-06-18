@@ -5,6 +5,7 @@
 # ========================================================================
 import pika 
 import json
+import requests
 
 def publicar_reserva(id_reserva, nome_navio, data_embarque, passageiros, cabines, routing_key):
       nova_reserva = {
@@ -55,6 +56,15 @@ def callback_recusado(ch, method, properties, body):
       try:
             mensagem = json.loads(body)
             print(mensagem)
+            reserva_id = mensagem.get("reserva_id")
+            try:
+                  resp = requests.delete(f"http://localhost:8000/reservar/{reserva_id}")
+                  if resp.status_code == 200:
+                        print(f"Reserva {reserva_id} cancelada com sucesso via callback")
+                  else:
+                        print(f"Falha ao cancelar reserva {reserva_id}: {resp.text}")
+            except Exception as e:
+                  print(f"Erro ao cancelar reserva via callback: {e}")
 
             print("Pagamento Recusado. Reserva Cancelada.")
             
