@@ -40,6 +40,7 @@ def consultar_itinerarios(destino, data_embarque, porto_embarque):
             "valor_por_pessoa": it["valor_por_pessoa"],
             "lugares_visitados": it["lugares_visitados"],
             "datas": it["datas"],
+            "cabines_disponiveis": it["datas"][data_embarque]["cabines_disponiveis"],
         }
         resultados.append(item_resposta)
 
@@ -60,7 +61,9 @@ def consultar_detalhes(destino: str, nome_navio: str, data: str):
                     "valor_por_pessoa": item["valor_por_pessoa"],
                     "cabines_disponiveis": item["datas"][data]["cabines_disponiveis"]
                 }
-    return {"erro": "Itinerário não encontrado"}
+            
+    raise HTTPException(status_code=404, detail="Nenhum itinerário encontrado com os filtros informados.")
+    # return {"erro": "Itinerário não encontrado"}
 
 
 def atualizar_cabines_disponiveis(nome_navio, data_embarque, quantidade, operacao):

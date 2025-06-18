@@ -16,9 +16,9 @@ const ConsultaForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setResultados([]); 
     try {
       const response = await buscarItinerarios(filtros);
-      console.log('Resultado da consulta:', response.data);
       setResultados(response.data);
     } catch (error) {
       console.error('Erro ao buscar itinerários:', error);
@@ -61,7 +61,7 @@ const ConsultaForm = () => {
               <h3>{itinerario.nome_navio}</h3>
               <p><strong>Destino:</strong> {itinerario.destino}</p>
               <p><strong>Porto de Embarque:</strong> {itinerario.portos_embarque}</p>
-              <p><strong>Data:</strong> {filtros.data_embarque}</p>
+              <p><strong>Data:</strong> {itinerario.data}</p>
               <p><strong>Noites:</strong> {itinerario.noites}</p>
               <p><strong>Valor por Pessoa:</strong> R$ {itinerario.valor_por_pessoa}</p>
               <p><strong>Cabines Disponíveis:</strong> {itinerario.cabines_disponiveis}</p>

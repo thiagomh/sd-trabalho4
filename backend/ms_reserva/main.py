@@ -54,7 +54,7 @@ def criar_reserva(req: ReservaRequest):
         "data": req.data_embarque
     })
 
-    if resp.status_code != 200:
+    if resp.json() != 200:
         raise HTTPException(status_code=404, detail="Itinerário não encontrado")
 
     dados = resp.json()
