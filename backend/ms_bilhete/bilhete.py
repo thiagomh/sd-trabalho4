@@ -11,7 +11,7 @@ import uuid
 def gerar_bilhete(mensagem):
       return {
             "id_bilhete": str(uuid.uuid4()),
-            "id_reserva": mensagem["id_reserva"],
+            "id_reserva": mensagem["reserva_id"],
       }
 
 

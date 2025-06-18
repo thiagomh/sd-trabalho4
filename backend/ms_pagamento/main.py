@@ -61,7 +61,10 @@ async def webhook_pagamento(request: Request):
 
     fila = "pagamento-aprovado" if status else "pagamento-recusado"
 
-    publica_na_fila(fila, dados)
+    mensagem = {
+        "mensagem": dados
+    }
+    publica_na_fila(fila, mensagem)
 
     print(f"[MS Pagamento] Publicando mensagem: reserva {reserva_id} -> {status}")
 
